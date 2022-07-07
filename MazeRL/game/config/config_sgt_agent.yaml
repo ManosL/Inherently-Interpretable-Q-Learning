@@ -1,0 +1,95 @@
+game:
+    test_model: True # True if no training happens
+    checkpoint_name: "experiment_Agents_Collaborative_20220503" # Date and time of the experiments. Used loading the model created that date (if asked by the user) 
+    load_checkpoint: True # True if loading stored model
+    predict_user_action: True # Utilize prediction mechanism
+    second_human: False # False if playing with RL agent
+    second_agent: False # Two separate virtual agents collaborate
+    agent_only: False # True if playing only the RL agent (no human-in-the-loop)
+    verbose: True # Used for logging
+    save: True # Save models and logs
+    discrete_input: False # Discrete or continuous human input
+    human_alone: False # human is playing alone
+    
+    # position of the goal on the board
+    goal: "left_down" # "left_down" "left_up" "right_down"
+
+SAC:
+  # SAC parameters
+  # NOTE: Only discrete SAC is compatible with the game so far
+  # discrete: True
+  # layer1_size: 32 # Number of variables in hidden layer
+  # layer2_size: 32 # Number of variables in hidden layer
+  # batch_size: 256
+  # gamma: 0.99  # discount factor
+  # tau: 0.005
+  # alpha: 0.0003
+  # beta: 0.0003
+  # target_entropy_ratio: 0.4
+
+  # Type of reward function
+  # Currently three reward functions are implemented
+  # The implementation and the description are in the game/rewards.py file
+  # Choose on the the following: Shafti, Distance, Timeout
+  reward_function: Shafti
+
+Experiment:
+  start_with_testing_random_agent: False # True to start experiment with testing human with random agent
+  online_updates: False # True if a single gradient update happens after every state transition
+  test_interval: 10 # Test the current model after `test_interval` episodes
+
+  # offline gradient updates allocation
+  # Normal: allocates evenly the total number of updates through each session
+  # descending: allocation of total updates using geometric progression with ratio 1/2
+  scheduling: normal # descending normal
+
+  ################################################################################################
+  # Loop 1: Trial-based Loop "Accelerating Human-Agent Collaborative Reinforcement Learning "
+  # Loop 2: Step-based Loop "Real-World Human-Robot Collaborative Reinforcement Learning"
+  ################################################################################################
+
+  # Type of loop
+  # max_episodes means that the entire game ends when a number of episodes is completed
+  # max_interactions means that the entire game ends when a number of total human-agent interactions in completed
+  # Choose max_episodes or max_interactions 
+  mode: max_games_mode
+
+  # Max episodes mode
+  max_games_mode:
+    max_episodes: 300  # Total episodes per game
+    max_evaluation_episodes: 100 # Total evaluation episodes
+    max_duration: 200  # Max duration of an episode (in seconds). An episode ends if the ball hits the target or if we reach the time limit
+    buffer_memory_size: 1000000
+    action_duration: 0.2 # Time duration between consecutive RL agent actions
+    start_training_step_on_episode: 10 # Will not train the agent before this trial
+    stop_random_agent: 10 # Stop using random agent on this trial and start using SAC
+    learn_every_n_episodes: 10 # Perform offline gradient updates after every `learn_every_n_episodes` episodes
+    total_update_cycles: 28000 # Total number of offline gradient updates throughout the whole experiment
+    reward_scale: 2
+    log_interval: 10  # Print avg reward in the interval
+
+  # Max interactions mode
+  max_interactions_mode:
+    total_timesteps: 3500  # Total number of interactions per game
+    max_timesteps_per_game: 40  # Max duration of an episode (in seconds). An episode ends if the ball hits the target or if we reach the time limit
+    buffer_memory_size: 1000
+    action_duration: 0.2 # Time duration between consecutive RL agent actions
+    start_training_step_on_timestep: 500 # Will not train the agent before this number of interactions occur
+    learn_every_n_timesteps: 500 # # Perform offline gradient updates after every `learn_every_n_timesteps` interactions
+    test_loop:
+    update_cycles: 20000 # Total number of offline gradient updates throughout the whole experiment
+    reward_scale: 2
+    log_interval: 2  # games
+
+  # Test the agent during training
+  test_loop:
+    max_episodes: 10 # Total test trials during each test session
+    max_duration: 40 # Max steps per trial (change it to time instead of timesteps)
+    action_duration: 0.2 # Time duration between consecutive RL agent actions
+    max_score: 200
+
+GUI:
+  start_up_screen_display_duration: 5 # the time in sec the set-up screen is being displayed
+  timeout_screen_display_duration: 3  # the time in sec the timeout screen is being displayed
+  goal_screen_display_duration: 3 # the time in sec the goal screen is being displayed
+  
