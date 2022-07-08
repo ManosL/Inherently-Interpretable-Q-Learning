@@ -5,6 +5,7 @@ PolicyDistillation/__pycache__
 RobotNavigation/__pycache__
 MazeRL/game/__pycache__
 rl_models/__pycache__
+CQI/__pycache__
 MazeRL/maze3D_new/__pycache__
 MazeRL/plot_utils/__pycache__
 utils/__pycache__
