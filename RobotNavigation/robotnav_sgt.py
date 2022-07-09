@@ -1,3 +1,4 @@
+from ast import Import
 import sys
 sys.path.append(r'./')
 import numpy as np
@@ -5,7 +6,10 @@ import time
 from tqdm.auto import tqdm
 from rl_models.SGTAgent import Agent
 from utils.scores import ScoreLogger
-from RobotNavigation import RobotNavEnv
+try:
+    from RobotNavigation.RobotNavigation import RobotNavEnv
+except ImportError:
+    from RobotNavigation import RobotNavEnv
 
 class Experiment:
     def __init__(self, env_name):
