@@ -106,7 +106,7 @@ class ScoreLogger:
             self.acc_x.append(x[-average_range:][0])
             self.acc_y.append(np.mean(y[-average_range:]))
             self.acc_stdev.append(np.std(y[-average_range:]) / np.sqrt(np.size(y[-average_range:])))
-            plt.plot(self.acc_x, self.acc_y, label=str(average_range) + " runs average")
+            plt.plot(self.acc_x, self.acc_y, label=str(average_range) + " episodes average")
             
             plt.fill_between(self.acc_x, np.array(self.acc_y) - np.array(self.acc_stdev), np.array(self.acc_y) + np.array(self.acc_stdev), alpha=0.5)
 
