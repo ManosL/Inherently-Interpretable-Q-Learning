@@ -60,9 +60,6 @@ class Experiment:
                     if agent.model[0]._isFit:
                         print('tree sizes: ', [tree.get_depth() for tree in agent.model])
                     break
-            
-            agent.exploration_rate *= agent.exploration_decay
-            agent.exploration_rate = max(agent.exploration_min, agent.exploration_rate)
 
         agent.save_model(score_logger.folder_path+'SGTAgent.pkl')
 

@@ -157,7 +157,11 @@ class Imitator(Agent):
 
         import torch
         self.target = torch.load(r'./PolicyDistillation/teacher.pt')
-
+    
+    def act(self, state):
+        q_values = np.array([estimator.predict(state)[0] for estimator in self.model])
+        return np.argmax(q_values)
+  
     def experience_replay(self):
         if len(self.memory) < self.batch_size:
             return
