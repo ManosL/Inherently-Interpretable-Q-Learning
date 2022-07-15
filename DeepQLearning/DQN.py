@@ -32,7 +32,7 @@ class DQN():
         with torch.no_grad():
             return self.model(torch.Tensor(state))
 
-class DQN_double(DQN):
+class DDQN(DQN):
     def __init__(self, state_dim, action_dim, hidden_dim, lr):
         super().__init__(state_dim, action_dim, hidden_dim, lr)
         self.target = copy.deepcopy(self.model)
@@ -57,13 +57,14 @@ class DQN_double(DQN):
             for state, action, next_state, reward, done in data:
                 states.append(state)
                 q_values = self.predict(state).tolist()
+                
                 if done:
                     q_values[action] = reward
                 else:
-                    # The only difference between the simple replay is in this line
-                    # It ensures that next q values are predicted with the target network.
-                    q_values_next = self.target_predict(next_state)
-                    q_values[action] = reward + gamma * torch.max(q_values_next).item()
+                  double_q_values = self.predict(next_state)
+                  future_q_values = self.target_predict(next_state).numpy()
+                  best_next_action = torch.argmax(double_q_values).tolist()
+                  q_values[action] = reward + gamma * future_q_values[best_next_action]
 
                 targets.append(q_values)
 

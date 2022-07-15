@@ -95,6 +95,6 @@ class Experiment:
                         break
 
 if __name__ == "__main__":
-    from DeepQLearning.DQN import DQN_double
+    from DeepQLearning.DQN import DDQN
     exp = Experiment('CartPole-v1')
     exp.policy_learning()       
