@@ -54,7 +54,7 @@ class Experiment:
                 state_next = np.reshape(state_next, [1, observation_space])
                 agent.remember(state, action, reward, state_next, done)
                 state = state_next
-                agent.experience_replay()
+
                 if done:
                     print('-------------------------------')
                     print("Episode: " + str(episode) + ", exploration: " + str(agent.exploration_rate) + ", score: " + str(step))
