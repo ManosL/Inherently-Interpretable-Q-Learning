@@ -6,6 +6,7 @@ import math
 from utils.scores import ScoreLogger
 from rl_models.SGTAgent import Imitator
 import gym
+from tqdm.auto import tqdm
 
 class Experiment:
     def __init__(self, env_name):
@@ -39,7 +40,7 @@ class Experiment:
         score_logger = ScoreLogger(params)
 
         start = time.process_time()
-        for episode in range(1, 101):
+        for episode in range(1, 501):
             state = self.env.reset()
             state = np.reshape(state, [1, observation_space])
             step = 0
@@ -51,7 +52,7 @@ class Experiment:
                 state_next = np.reshape(state_next, [1, observation_space])
                 agent.remember(state, action, reward, state_next, done)
                 state = state_next
-                agent.experience_replay()
+                
                 if done:
                     print('-------------------------------')
                     print("Episode: " + str(episode) + ", exploration: " + str(agent.exploration_rate) + ", score: " + str(step))
@@ -60,6 +61,9 @@ class Experiment:
                     if agent.model[0]._isFit:
                         print('tree sizes: ', [tree.get_depth() for tree in agent.model])
                     break
+
+            for _ in tqdm(range(100)):
+                agent.experience_replay()
 
         agent.save_model(score_logger.folder_path+'SGTAgent.pkl')
 
