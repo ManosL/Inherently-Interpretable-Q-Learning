@@ -250,15 +250,6 @@ class Experiment:
                 timedout = False
 
                 for timestep in range(max_timesteps):
-                    if self.config['game']['predict_user_action']:
-                        if os.path.exists(f"results/{self.config['game']['checkpoint_name']}/right_left.pkl"):
-                            estimated_human_action = np.argmax([guide_model.predict(state)[0] for guide_model in self.guide_agent.model]) 
-                            self.env.board.update()
-                            glClearDepth(1000.0)
-                            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-                            self.env.board.draw(mode=estimated_human_action+4)
-                            pg.display.flip()
-                            time.sleep(0.07)
                     step += 1
                     #env.render()
                     if self.config['game']['second_agent']:
@@ -270,6 +261,16 @@ class Experiment:
                     state_next = np.reshape(state_next, [1, self.env.observation_shape[0]])
                     state = state_next
                     rewards += reward
+
+                    if self.config['game']['predict_user_action']:
+                        if os.path.exists(f"results/{self.config['game']['checkpoint_name']}/right_left.pkl"):
+                            estimated_human_action = np.argmax([guide_model.predict(state)[0] for guide_model in self.guide_agent.model]) 
+                            self.env.board.update()
+                            glClearDepth(1000.0)
+                            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+                            self.env.board.draw(mode=estimated_human_action+4)
+                            pg.display.flip()
+                            time.sleep(0.07)
 
                     if self.config['game']['agent_only']:
                         score_logger.add_action(action)
