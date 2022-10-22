@@ -42,14 +42,15 @@ class Experiment:
 
         start = time.process_time()
         for episode in range(1, 501):
-            state = self.env.reset()
+            state, _ = self.env.reset()
+
             state = np.reshape(state, [1, observation_space])
             step = 0
             while True:
                 step += 1
                 #self.env.render()
                 action = agent.act(state)
-                state_next, reward, done, _ = self.env.step(action)
+                state_next, reward, done, _, _ = self.env.step(action)
                 state_next = np.reshape(state_next, [1, observation_space])
                 agent.remember(state, action, reward, state_next, done)
                 state = state_next
