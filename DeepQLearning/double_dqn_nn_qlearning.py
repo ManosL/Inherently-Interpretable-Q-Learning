@@ -1,7 +1,7 @@
 import sys
 sys.path.append(r'./')
 from utils.scores import ScoreLogger
-from DQN import DQN_double
+from DQN import DDQN
 import time
 import torch
 import gym
@@ -18,7 +18,7 @@ class Experiment:
         n_action = self.env.action_space.n
         n_hidden = 50
         self.lr = 0.01
-        self.model = DQN_double(n_state, n_action, n_hidden, self.lr)
+        self.model = DDQN(n_state, n_action, n_hidden, self.lr)
 
     def q_learning(self, gamma=0.9, 
                 epsilon=0.3, eps_decay=0.99,
@@ -57,7 +57,7 @@ class Experiment:
                 self.model.target_update()
             
             # Reset state
-            state = self.env.reset()
+            state, _ = self.env.reset()
             done = False
             total = 0
             step = 0
@@ -72,7 +72,7 @@ class Experiment:
                     action = torch.argmax(q_values).item()
                 
                 # Take action and add reward to total
-                next_state, reward, done, _ = self.env.step(action)
+                next_state, reward, done, _, _ = self.env.step(action)
                 
                 # Update total and memory
                 total += reward
